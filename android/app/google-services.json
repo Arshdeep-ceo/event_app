@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "519939462674",
+    "project_id": "event-app-d6105",
+    "storage_bucket": "event-app-d6105.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:519939462674:android:1b6c5c4e6e8dd9974aeacb",
+        "android_client_info": {
+          "package_name": "com.arsh.event_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "519939462674-2s2tb9a7h9lv4uc17qdjo6po24e14mcb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8Sk4c2gNpyOanTJCvwDcuGqNjw0FD4e8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "519939462674-2s2tb9a7h9lv4uc17qdjo6po24e14mcb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
