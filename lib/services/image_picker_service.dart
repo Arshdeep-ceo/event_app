@@ -8,7 +8,7 @@ class ImagePickerService extends GetxController {
 
   final _imagePath = "".obs;
 
-  get imagePath => _imagePath.value;
+  String get imagePath => _imagePath.value;
 
   void resetImagePath() {
     _imagePath.value = "";
@@ -16,6 +16,11 @@ class ImagePickerService extends GetxController {
 
   void pickImageFromGallery() async {
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    _imagePath.value = image!.path;
+  }
+
+  void pickImageFromCamera() async {
+    final XFile? image = await picker.pickImage(source: ImageSource.camera);
     _imagePath.value = image!.path;
   }
 }

@@ -16,6 +16,7 @@ class UnderlinedInputWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
       validator: validator,
       style: Get.textTheme.bodyLarge!.copyWith(color: kwhite),
       textInputAction: TextInputAction.next,

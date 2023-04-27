@@ -12,6 +12,7 @@ class InputWidget extends StatelessWidget {
       this.textColor = Colors.white,
       this.hintColor = Colors.black54,
       this.enabled = true,
+      this.keyboardType,
       this.textInputAction = TextInputAction.next,
       required this.focusedBorderColor,
       this.onChanged})
@@ -28,6 +29,7 @@ class InputWidget extends StatelessWidget {
   final TextInputAction textInputAction;
   final Color? hintColor;
   final bool? enabled;
+  final TextInputType? keyboardType;
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +72,7 @@ class InputWidget extends StatelessWidget {
             fillColor: fillColor,
           ),
           onChanged: onChanged,
+          keyboardType: keyboardType,
         ),
       ),
     );

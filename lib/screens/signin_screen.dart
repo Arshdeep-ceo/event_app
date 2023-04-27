@@ -79,6 +79,7 @@ class SignInScreen extends StatelessWidget {
                               validator: loginModel.validateEmail,
                               hintText: 'email',
                               textColor: Colors.black,
+                              keyboardType: TextInputType.emailAddress,
                             ),
                             InputWidget(
                               focusedBorderColor: ksecondaryColor,

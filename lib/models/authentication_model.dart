@@ -17,17 +17,21 @@ class AuthenticationModel extends GetxController {
       required String name,
       required String password,
       required String username}) async {
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-    await users.add({
+    DocumentReference users = FirebaseFirestore.instance
+        .collection('users')
+        .doc(_auth.currentUser!.uid);
+    await users.set({
       "email": email,
       "name": name,
       "password": password,
       "username": username,
-    }).catchError(
-      (error) => Get.showSnackbar(
-        GetSnackBar(message: error.toString()),
-      ),
-    );
+    }).catchError((error) {
+      Get.snackbar(
+        'Error',
+        error.toString(),
+      );
+      return error;
+    });
   }
 
   // Future<void> updateUserDetails(

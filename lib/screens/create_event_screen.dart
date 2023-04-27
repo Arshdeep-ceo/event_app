@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
 import '../constants/constants.dart';
 import '../constants/theme.dart';
+import '../services/storage_service.dart';
 import '../widgets/back_button_widget.dart';
 import '../widgets/solid_button_widget.dart';
 import '../widgets/underlined_input_widget.dart';
@@ -24,6 +25,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   Widget build(BuildContext context) {
     var imageModel = Get.put(ImagePickerService());
     var createEventModel = Get.put(CreateEventModel());
+    var storageModel = Get.put(StorageService());
     var deviceSize = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
@@ -111,7 +113,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                   ),
                                   Text(
                                     'Choose Event Image',
-                                    style: Get.textTheme.bodyLarge!.copyWith(
+                                    style: Get.textTheme.bodyMedium!.copyWith(
                                         color: Colors.white70,
                                         fontWeight: FontWeight.bold),
                                   ),
@@ -194,11 +196,18 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
                               // formKey.currentState!.save();
-                              if (imageModel.imagePath == '') {
+                              if (imageModel.imagePath.isEmpty) {
                                 Get.snackbar(
                                     'Error', 'Event Image not selected');
+                              } else if (createEventModel.selectedDate ==
+                                      DateTime(2021) ||
+                                  createEventModel.selectedTime ==
+                                      const TimeOfDay(hour: 1, minute: 1)) {
+                                Get.snackbar('Error',
+                                    'Select Date and Time for the event');
+                              } else {
+                                await createEventModel.createEvent();
                               }
-                              await createEventModel.createEvent();
                             }
                           },
                           borderRadius: 20,

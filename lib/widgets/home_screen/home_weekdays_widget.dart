@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_app/models/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icons_plus/icons_plus.dart';
 import '../../constants/constants.dart';
 import '../../constants/theme.dart';
 import '../../models/home_model.dart';
@@ -29,7 +30,7 @@ class HomeWeekdaysWidget extends StatelessWidget {
 
     return RawScrollbar(
       crossAxisMargin: 10,
-      thumbColor: Colors.white54,
+      thumbColor: Colors.white38,
       controller: pageController,
       interactive: true,
       thickness: 20,
@@ -42,7 +43,7 @@ class HomeWeekdaysWidget extends StatelessWidget {
         onPageChanged: (index) {
           // pageIndex = index;
           // homeModel.setEventPictureUrl(
-          //                     snapshot.data!.docs[index]['eventPictureUrl']);
+          //                     snapshotV.data!.docs[index]['eventPictureUrl']);
           eventModel.setEventWeekday =
               (snapshotV.data!.docs[0]['dateOfEvent'] as Timestamp)
                   .toDate()
@@ -85,14 +86,8 @@ class HomeWeekdaysWidget extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  // Get.to(
-                  //   () => const EventDetailsScreen(),
-                  // );
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: ((context) => const EventDetailsScreen()),
-                    ),
+                  Get.to(
+                    () => const EventDetailsScreen(),
                   );
                 },
                 child: StreamBuilder<QuerySnapshot>(
@@ -117,7 +112,7 @@ class HomeWeekdaysWidget extends StatelessWidget {
                               padding: const EdgeInsets.only(bottom: 50.0),
                               child: Text(
                                 'No Events Yet',
-                                style: Get.textTheme.headlineMedium!
+                                style: Get.textTheme.titleLarge!
                                     .copyWith(color: Colors.white38),
                               ),
                             )));
@@ -139,7 +134,7 @@ class HomeWeekdaysWidget extends StatelessWidget {
                           //     (event['dateOfEvent'] as Timestamp).toDate()));
 
                           return Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(5.0),
                             child: Column(
                               children: [
                                 Stack(
@@ -148,7 +143,7 @@ class HomeWeekdaysWidget extends StatelessWidget {
                                       color: Colors.white24,
                                       shape: RoundedRectangleBorder(
                                           borderRadius: kborderRadius),
-                                      elevation: 5,
+                                      elevation: 20,
                                       shadowColor: Colors.black54,
                                       child: ClipRRect(
                                         borderRadius: kborderRadius,
@@ -262,7 +257,7 @@ class HomeWeekdaysWidget extends StatelessWidget {
                                 .day;
                           }),
                           height: deviceSize.height / 1.5,
-                          viewportFraction: 0.83,
+                          viewportFraction: 0.9,
                           initialPage: 0,
                           reverse: false,
                           enlargeCenterPage: true,

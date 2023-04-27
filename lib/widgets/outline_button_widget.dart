@@ -18,9 +18,6 @@ class OutlinedButtonWidget extends StatelessWidget {
           side: MaterialStateProperty.all(
             BorderSide(width: 2, color: color!),
           ),
-          // backgroundColor: MaterialStateProperty.all(
-          //   color,
-          // ),
         ),
         onPressed: onPressed,
         child: Text(

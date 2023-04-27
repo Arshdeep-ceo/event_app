@@ -1,9 +1,11 @@
+import 'package:event_app/models/home_model.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:lottie/lottie.dart';
 import 'package:icons_animate/icons_animate.dart';
-
 import '../../constants/theme.dart';
+import '../../models/event_model.dart';
+import '../../models/profile_model.dart';
 
 class AnimatedIconWidget extends StatefulWidget {
   const AnimatedIconWidget({super.key});
@@ -13,19 +15,21 @@ class AnimatedIconWidget extends StatefulWidget {
 }
 
 class _AnimatedIconWidgetState extends State<AnimatedIconWidget> {
-  late AnimationController _favoriteController;
   late AnimateIconController c1;
-  // final AnimateIconController
+  final eventModel = Get.put(EventModel());
+  final profileModel = Get.put(ProfileModel());
 
   @override
   void initState() {
-    // _favoriteController = AnimationController(
-    //     vsync: this,
-    //     duration: const Duration(
-    //       milliseconds: 450,
-    //     ));
     c1 = AnimateIconController();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      for (var user in eventModel.likedBy) {
+        if (user == profileModel.currentUserEmail) {
+          c1.animateToEnd();
+        }
+      }
+    });
   }
 
   bool onEndIconPress(BuildContext context) {
@@ -38,31 +42,6 @@ class _AnimatedIconWidgetState extends State<AnimatedIconWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // return IconButton(
-    //   splashRadius: 28,
-    //   iconSize: 20,
-    //   onPressed: () {
-    //     if (_favoriteController.status == AnimationStatus.dismissed) {
-    //       _favoriteController.reset();
-    //       _favoriteController.animateTo(0.6);
-    //     } else {
-    //       _favoriteController.reverse();
-    //     }
-    //   },
-    //   icon: Lottie.asset(
-    //     Icons8.heart_color,
-    //     controller: _favoriteController,
-    //     delegates: LottieDelegates(
-    //       values: [
-    //         ValueDelegate.color(
-    //           const ['Shape Layer 1', 'Rectangle', 'Fill 1'],
-    //           value: Colors.red,
-    //         ),
-    //       ],
-    //     ),
-    //   ),
-    // );
-
     return AnimateIcons(
       duration: const Duration(milliseconds: 350),
       startIconColor: Colors.white,
@@ -71,8 +50,16 @@ class _AnimatedIconWidgetState extends State<AnimatedIconWidget> {
       startIcon: LineAwesome.heart,
       endIcon: LineAwesome.heart_solid,
       controller: c1,
-      onStartIconPress: () => onStartIconPress(context),
-      onEndIconPress: () => onEndIconPress(context),
+      onStartIconPress: () {
+        eventModel.setLike = true;
+        eventModel.onEventLiked();
+        return onStartIconPress(context);
+      },
+      onEndIconPress: () {
+        eventModel.setLike = false;
+        eventModel.onEventLiked();
+        return onEndIconPress(context);
+      },
     );
   }
 }

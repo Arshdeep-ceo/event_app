@@ -2,14 +2,18 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_app/models/home_model.dart';
+import 'package:event_app/models/profile_model.dart';
 import 'package:event_app/services/image_picker_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import '../constants/constants.dart';
+// import 'package:intl/intl.dart';
+
+import '../services/routes.dart';
 
 class EventModel extends GetxController {
   var homeModel = Get.put(HomeModel());
   var imageModel = Get.put(ImagePickerService());
+  final _profileModel = Get.put(ProfileModel());
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   final _dateOfEvent = Timestamp(0, 0).obs;
@@ -21,7 +25,10 @@ class EventModel extends GetxController {
   final _eventTitle = "".obs;
   final _eventOrganizer = "".obs;
   final _username = "".obs;
+  final likedBy = [].obs;
+  final _isLiked = false.obs;
 
+  get isLiked => _isLiked.value;
   get dateOfEvent => _dateOfEvent.value;
   get eventPostedDate => _eventPostedDate.value;
   get eventEmail => _eventEmail.value;
@@ -38,13 +45,15 @@ class EventModel extends GetxController {
   int get eventDay => _eventDay.value;
   int get eventWeekday => _eventWeekday.value;
 
+  set setLike(bool like) => _isLiked.value = like;
+
   set setEventDay(int day) => _eventDay.value = day;
   set setEventWeekday(int date) => _eventWeekday.value = date;
 
-  Future<QuerySnapshot> getEventDetails() async {
+  Future<QuerySnapshot> getEventDetails(String eventPictureUrl) async {
     final docRef = await firestore
         .collection("events")
-        .where('eventPictureUrl', isEqualTo: homeModel.eventPictureUrl)
+        .where('eventPictureUrl', isEqualTo: eventPictureUrl)
         .get();
     var eventDetails = docRef.docs.single;
 
@@ -56,17 +65,27 @@ class EventModel extends GetxController {
     _dateOfEvent.value = eventDetails['dateOfEvent'];
     _eventPostedDate.value = eventDetails['datePosted'];
     _eventDescription.value = eventDetails['eventDescription'];
+    likedBy.value = eventDetails['likedBy'];
 
     return docRef;
   }
 
-  void currentWeek() {
-    String date = DateFormat.yMMMMEEEEd().format(DateTime.now());
-    print(date);
-    // return 0;
-  }
+  // void currentWeek() {
+  //   String date = DateFormat.yMMMMEEEEd().format(DateTime.now());
+  //   print(date);
+  //   // return 0;
+  // }
 
   List<int> monthsList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+  void openProfile() {
+    if (username == _profileModel.username) {
+      print('object');
+      Get.toNamed(Routes.profileScreen);
+    } else {
+      // _profileModel.getUserDetails();
+    }
+  }
 
   Stream<QuerySnapshot> getEvents(int monthsIndex) {
     // currentWeek();
@@ -74,7 +93,7 @@ class EventModel extends GetxController {
       final docRef = firestore
           .collection("events")
           .where('dateOfEvent',
-              isGreaterThanOrEqualTo: DateTime(2021, monthsList[monthsIndex]))
+              isGreaterThanOrEqualTo: DateTime(2023, monthsList[monthsIndex]))
           .where('dateOfEvent', isLessThan: DateTime(2024))
           .orderBy('dateOfEvent')
           .snapshots();
@@ -83,13 +102,58 @@ class EventModel extends GetxController {
       final docRef = firestore
           .collection("events")
           .where('dateOfEvent',
-              isGreaterThanOrEqualTo: DateTime(2021, monthsList[monthsIndex]))
+              isGreaterThanOrEqualTo: DateTime(2023, monthsList[monthsIndex]))
           .where('dateOfEvent',
-              isLessThan: DateTime(2021, monthsList[monthsIndex + 1]))
+              isLessThan: DateTime(2023, monthsList[monthsIndex + 1]))
           .orderBy('dateOfEvent')
           .snapshots();
       // events = docRef.elementAt(eventIndex);
       return docRef;
+    }
+  }
+
+  void onEventLiked() async {
+    if (_isLiked.value == true) {
+      try {
+        var docRef = await firestore
+            .collection('events')
+            .where('eventPictureUrl', isEqualTo: homeModel.eventPictureUrl)
+            .limit(1)
+            .get()
+            .then((snapshot) => snapshot.docs[0].reference);
+
+        var batch = firestore.batch();
+        batch.update(docRef, {
+          'likedBy': FieldValue.arrayUnion([_profileModel.currentUserEmail])
+        });
+        await batch.commit();
+        Get.snackbar('Success', 'Event added to likes');
+      } catch (e) {
+        if (kDebugMode) {
+          print(e);
+        }
+      }
+    } else {
+      try {
+        var docRef = await firestore
+            .collection('events')
+            .where('eventPictureUrl', isEqualTo: homeModel.eventPictureUrl)
+            .limit(1)
+            .get()
+            .then((snapshot) => snapshot.docs[0].reference);
+
+        var batch = firestore.batch();
+        batch.update(docRef, {
+          'likedBy': FieldValue.arrayRemove([_profileModel.currentUserEmail])
+        });
+        await batch.commit();
+        Get.snackbar('Success', 'Event removed from likes',
+            snackStyle: SnackStyle.GROUNDED);
+      } catch (e) {
+        if (kDebugMode) {
+          print(e);
+        }
+      }
     }
   }
 }

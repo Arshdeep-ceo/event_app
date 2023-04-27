@@ -10,6 +10,7 @@ class SolidButtonWidget extends StatelessWidget {
       required this.buttonText,
       required this.color,
       this.iconData,
+      this.elevation = 12,
       this.borderRadius = 4,
       this.textColor = Colors.white})
       : super(key: key);
@@ -20,6 +21,7 @@ class SolidButtonWidget extends StatelessWidget {
   final Color? color;
   final IconData? iconData;
   final double borderRadius;
+  final double? elevation;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class SolidButtonWidget extends StatelessWidget {
           style: ButtonStyle(
               shape: MaterialStateProperty.all(RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(borderRadius))),
-              elevation: MaterialStateProperty.all(12),
+              elevation: MaterialStateProperty.all(elevation),
               backgroundColor: MaterialStateProperty.all(color)),
           onPressed: onPressed,
           child: Stack(
